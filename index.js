@@ -97,14 +97,19 @@ const copy = function (sheetId, row, set, count) {
 
 };
 
-const writeFile = function *(fn){
+const getBuffer = function *(fn){
     const zip = this._.zip;
     for (let b of this._.back) {
         const builder = new xml2js.Builder();
         const destXml = builder.buildObject(b[1]);
         zip.file(b[0], destXml);
     }
-    const destData = yield zip.generateAsync({type: "nodebuffer"});
+    return yield zip.generateAsync({type: "nodebuffer"});
+    yield fs_writeFile(fn, destData);
+};
+
+const writeFile = function *(fn){
+    const destData = yield this.getBuffer();
     yield fs_writeFile(fn, destData);
 };
 
