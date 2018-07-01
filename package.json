@@ -1,0 +1,17 @@
+{
+  "name": "slim-xlsx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maksim B. <mblinenkov@yandex.ru>",
+  "license": "ISC",
+  "dependencies": {
+    "co": "^4.6.0",
+    "jszip": "^3.1.5",
+    "underscore": "^1.9.1",
+    "xml2js": "^0.4.19"
+  }
+}
