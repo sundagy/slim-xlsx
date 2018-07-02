@@ -4,7 +4,7 @@ Features:
 * Read template xlsx, insert, edit & save (perfict for invoice like documents)
 * No any library used for xlsx
 * Styles & formats are correctly preserving
-* Insert new rows with merget cells
+* Insert new rows with merged cells
 * Rows cloning
 
 Install:
