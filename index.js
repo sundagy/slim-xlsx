@@ -48,12 +48,14 @@ const shift = function (sheetId, row, count) {
 
         mc.$.ref = from + ':' + to;
     }
-    for (let c of xlsx.xl.calcChain.calcChain.c) {
-        if (c.$.i != sheetId) continue;
-        let r = parseInt(c.$.r.match(/\d+/)[0]);
-        if (r >= row) {
-            r += count;
-            c.$.r = c.$.r.replace(/\d+/, r);
+    if (xlsx.xl.calcChain) {
+        for (let c of xlsx.xl.calcChain.calcChain.c) {
+            if (c.$.i != sheetId) continue;
+            let r = parseInt(c.$.r.match(/\d+/)[0]);
+            if (r >= row) {
+                r += count;
+                c.$.r = c.$.r.replace(/\d+/, r);
+            }
         }
     }
 };
@@ -139,19 +141,27 @@ const cell = function(sheetId, addr, value){
                 customHeight: '1',
                 thickBot: '1',
                 'x14ac:dyDescent': '0.25' },
-            c: [ { '$': {r: addr}, v: [''] } ]
+            c: [ { '$': {r: addr, t: 's'}, v: [''] } ]
         };
         sheet.worksheet.sheetData[0].row.push(row);
         sheet.worksheet.sheetData[0].row.sort((a, b) => a.$.r - b.$.r);
     }
     if (!row.c) {
-        row.c = [ { '$': {r: addr}, v: [''] }];
+        row.c = [ { '$': {r: addr, t: 's'}, v: [''] }];
     }
     let cell = row.c.find(a => a.$.r === addr);
+    const sst = this.xl.sharedStrings.sst.si.push({t: ['' + value]});
     if (cell) {
-        cell.v = ['' + value];
+        cell.v = [sst - 1];
+        cell.$.t = 's';
+        if (cell.f) {
+            if (xlsx.xl.calcChain) {
+                this.xl.calcChain.calcChain.c = this.xl.calcChain.calcChain.c.filter(a => a.$.r !== addr);
+            }
+            delete cell.f;
+        }
     } else {
-        row.c.push({ '$': {r: addr}, v: ['' + value] });
+        row.c.push({ '$': {r: addr, t: 's'}, v: [sst - 1] });
         row.c.sort((a, b) => chid(a.$.r) - chid(b.$.r));
     }
 };
@@ -160,6 +170,7 @@ exports.readFile = function*(fn){
     const data = yield fs_readFile(fn);
     const zip = yield JSZip.loadAsync(data);
     let xlsx = {_:{zip},
+        getBuffer,
         writeFile,
         shift,
         copy,
@@ -181,5 +192,6 @@ exports.readFile = function*(fn){
         }
     }
     xlsx._.back = back;
+
     return xlsx;
 };
