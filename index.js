@@ -155,7 +155,7 @@ const cell = function(sheetId, addr, value){
         cell.v = [sst - 1];
         cell.$.t = 's';
         if (cell.f) {
-            if (xlsx.xl.calcChain) {
+            if (this.xl.calcChain) {
                 this.xl.calcChain.calcChain.c = this.xl.calcChain.calcChain.c.filter(a => a.$.r !== addr);
             }
             delete cell.f;

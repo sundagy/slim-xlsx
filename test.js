@@ -11,6 +11,7 @@ co(function *(){
         xlsx.cell(1, 'E' + (34 + i), Math.random());
         xlsx.cell(1, 'B' + (34 + i), i + 1);
     }
+    xlsx.cell(1, 'B7', 'ИП "Рога и копыта"');
     yield xlsx.writeFile('torg12-ready.xlsx');
 
 }).catch(err => console.error(err));
