@@ -21,7 +21,7 @@ co(function *(){
 
     // Read document from file
     const xlsx = yield slim.readFile('torg12.xlsx');
-    // For sheet 1 move rows below 35 down for 10 rows (ow. insert 10 rows in sheet 1 at row 35)
+    // For sheet 1 move rows below 35 down for 10 rows (ow. insert 10 rows in sheet 1 after 35 row)
     xlsx.shift(1, 35, 10);
     // For sheet 1 copy row 34 and insert it starting at row 35 and below 10 times
     xlsx.copy(1, 34, 35, 10);
