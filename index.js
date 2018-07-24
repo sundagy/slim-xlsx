@@ -107,7 +107,6 @@ const getBuffer = function *(fn){
         zip.file(b[0], destXml);
     }
     return yield zip.generateAsync({type: "nodebuffer"});
-    yield fs_writeFile(fn, destData);
 };
 
 const writeFile = function *(fn){
