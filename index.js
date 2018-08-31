@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 const _ = require('underscore');
 const xml2js = require('xml2js');
 const JSZip = require('jszip');
@@ -99,19 +98,19 @@ const copy = function (sheetId, row, set, count) {
 
 };
 
-const getBuffer = function *(fn){
+const getBuffer = async function (){
     const zip = this._.zip;
     for (let b of this._.back) {
         const builder = new xml2js.Builder();
         const destXml = builder.buildObject(b[1]);
         zip.file(b[0], destXml);
     }
-    return yield zip.generateAsync({type: "nodebuffer"});
+    return await zip.generateAsync({type: "nodebuffer"});
 };
 
-const writeFile = function *(fn){
-    const destData = yield this.getBuffer();
-    yield fs_writeFile(fn, destData);
+const writeFile = async function (fn){
+    const destData = await this.getBuffer();
+    await fs_writeFile(fn, destData);
 };
 
 const abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -165,9 +164,9 @@ const cell = function(sheetId, addr, value){
     }
 };
 
-exports.readFile = function*(fn){
-    const data = yield fs_readFile(fn);
-    const zip = yield JSZip.loadAsync(data);
+exports.readFile = async function (fn){
+    const data = await fs_readFile(fn);
+    const zip = await JSZip.loadAsync(data);
     let xlsx = {_:{zip},
         getBuffer,
         writeFile,
@@ -184,8 +183,8 @@ exports.readFile = function*(fn){
                 last[pp] = last[pp] || {};
                 last = last[pp];
             }
-            const xml = yield zip.file(f).async("string");
-            const json = yield parseString(xml);
+            const xml = await zip.file(f).async("string");
+            const json = await parseString(xml);
             back.push([f, json]);
             last[_.last(p).replace('.xml','')] = json;
         }
